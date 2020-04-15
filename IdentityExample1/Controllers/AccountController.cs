@@ -14,7 +14,8 @@ using Identity.Dapper.Entities;
 namespace IdentityExample1.Controllers
 {
     //annotation means the default is you must be logged in to run an action
-    [Authorize]
+    //[Authorize] 
+    //TODO: Figureout why this annotaion is broken. 
     public class AccountController : Controller
     {
         private readonly UserManager<DapperIdentityUser> _userManager;

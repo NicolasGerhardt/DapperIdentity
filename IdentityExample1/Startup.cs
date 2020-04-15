@@ -7,6 +7,7 @@ using Identity.Dapper.Entities;
 using Identity.Dapper.Models;
 using Identity.Dapper.SqlServer.Connections;
 using Identity.Dapper.SqlServer.Models;
+using IdentityExample1.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.CookiePolicy;
@@ -57,12 +58,14 @@ namespace IdentityExample1
                 options.Secure = CookieSecurePolicy.SameAsRequest;
             });
 
+            
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddTransient<ITasksDAL, TasksSQLDB>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {

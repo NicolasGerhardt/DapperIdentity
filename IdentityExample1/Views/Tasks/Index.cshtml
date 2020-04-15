@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewData["Title"] = "Task List";
+    IEnumerable<IdentityExample1.Models.Task> tasks = (IEnumerable<IdentityExample1.Models.Task>) ViewData["allTasks"];
+}
+
+    <h1>@ViewData["Title"]</h1>
+
+
+    <div class="list-wrapper">
+        <ul class="d-flex flex-column-reverse todo-list">
+            @foreach (var task in tasks)
+            {
+                <li>
+                    <div class="form-check"> <label class="form-check-label"> <input class="checkbox" type="checkbox" value="@task.Complete"> @task.Description <i class="input-helper"></i></label> </div> <i class="remove mdi mdi-close-circle-outline"></i>
+                </li>
+            }
+        </ul>
+    </div>
