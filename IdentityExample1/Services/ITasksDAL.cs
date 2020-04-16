@@ -9,5 +9,8 @@ namespace IdentityExample1.Services
     {
 
         public IEnumerable<Task> GetAllTasks();
+        void AddTask(Task task);
+        void ToggleTaskbyID(int id);
+        object GetAllTasksByUserID(int v);
     }
 }

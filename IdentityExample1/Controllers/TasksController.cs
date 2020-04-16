@@ -3,24 +3,65 @@ using System.Collections.Generic;
 using System.Linq;
 using IdentityExample1.Models;
 using IdentityExample1.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Identity.Dapper.Entities;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Identity;
 
 namespace IdentityExample1.Controllers
 {
     public class TasksController : Controller
     {
         private ITasksDAL tasksDAL;
+        private readonly UserManager<DapperIdentityUser> _userManager;
+        private readonly SignInManager<DapperIdentityUser> _signInManager;
+        private readonly ILogger _logger;
 
-        public TasksController(ITasksDAL tasksDAL)
+
+        public TasksController(ITasksDAL tasksDAL, 
+            UserManager<DapperIdentityUser> userManager, 
+            SignInManager<DapperIdentityUser> signInManager,
+            ILoggerFactory loggerFactory)
         {
             this.tasksDAL = tasksDAL;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _logger = loggerFactory.CreateLogger<AccountController>();
         }
 
         public IActionResult Index()
         {
-            ViewData["allTasks"] = tasksDAL.GetAllTasks();
+            if (int.TryParse(_userManager.GetUserId(User), out int UserID))
+            {
+                ViewData["allTasks"] = tasksDAL.GetAllTasksByUserID(UserID);
+            }
+            else
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            
 
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult AddTask(IdentityExample1.Models.Task task)
+        {
+            task.UserID = int.Parse(_userManager.GetUserId(User));
+
+            tasksDAL.AddTask(task);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult Toggle(int id)
+        {
+            Console.WriteLine("Toggling Task complete status");
+            tasksDAL.ToggleTaskbyID(id);
+            return RedirectToAction("Index");
         }
     }
 }

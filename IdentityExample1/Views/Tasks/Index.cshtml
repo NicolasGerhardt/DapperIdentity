@@ -1,19 +1,61 @@
-﻿
+﻿@model IdentityExample1.Models.Task
 @{
     ViewData["Title"] = "Task List";
-    IEnumerable<IdentityExample1.Models.Task> tasks = (IEnumerable<IdentityExample1.Models.Task>) ViewData["allTasks"];
+    IEnumerable<IdentityExample1.Models.Task> tasks = (IEnumerable<IdentityExample1.Models.Task>)ViewData["allTasks"];
+    if (tasks is null)
+    {
+        tasks = new List<IdentityExample1.Models.Task>();
+    }
 }
 
-    <h1>@ViewData["Title"]</h1>
+<h1>@ViewData["Title"]</h1>
 
 
-    <div class="list-wrapper">
-        <ul class="d-flex flex-column-reverse todo-list">
-            @foreach (var task in tasks)
-            {
-                <li>
-                    <div class="form-check"> <label class="form-check-label"> <input class="checkbox" type="checkbox" value="@task.Complete"> @task.Description <i class="input-helper"></i></label> </div> <i class="remove mdi mdi-close-circle-outline"></i>
-                </li>
-            }
-        </ul>
-    </div>
+<div>
+    <ul class="list-group">
+        @foreach (var task in tasks)
+        {
+            <li class="list-group-item">
+                <div>
+                    <label class="">
+                        <form action="/Tasks/Toggle/@task.ID" method="post" class="form-check-inline">
+                            @if (task.Complete)
+                            {
+                                <input type="submit" class="btn btn-success" value="Done" style="margin-right:1em"/>
+                                <del><span class="text-dark"> @task.Description</span></del>
+                            }
+                            else
+                            {
+                                <input type="submit" class="btn btn-secondary" value="Todo" style="margin-right:1em"/>
+                                <span class="text-dark"> @task.Description</span>
+                            }
+                        </form>
+                            @{
+                                if (task.DueDate < DateTime.Now)
+                                {
+                                    <span class="badge badge-danger">@task.DueDate.ToString("MM/dd/yyyy")</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-secondary">@task.DueDate.ToString("MM/dd/yyyy")</span>
+                                }
+                            }
+
+</label>
+                </div>
+            </li>
+        }
+
+        <li class="list-group-item">
+            <form asp-action="AddTask" method="post">
+                <div class="form-group form-inline">
+                    <input asp-for="Description" value="" placeholder="Task name here" class="form-control" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                    <input asp-for="DueDate" value="" class="form-control" />
+                    <span asp-validation-for="DueDate" class="text-danger"></span>
+                    <input type="submit" value="+ Add Task" class="btn btn-sm" />
+                </div>
+            </form>
+        </li>
+    </ul>
+</div>
