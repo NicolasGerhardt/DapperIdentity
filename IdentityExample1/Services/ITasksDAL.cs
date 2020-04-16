@@ -13,5 +13,6 @@ namespace IdentityExample1.Services
         void ToggleTaskbyID(int id);
         object GetAllTasksByUserID(int v);
         void DeleteTaskbyID(int id);
+        void UpdateTask(Task task);
     }
 }

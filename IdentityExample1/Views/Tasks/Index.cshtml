@@ -1,63 +1,91 @@
 ﻿@model IdentityExample1.Models.Task
 @{
     ViewData["Title"] = "Task List";
+
+
     IEnumerable<IdentityExample1.Models.Task> tasks = (IEnumerable<IdentityExample1.Models.Task>)ViewData["allTasks"];
     if (tasks is null)
     {
         tasks = new List<IdentityExample1.Models.Task>();
     }
+
+    int TaskToEditID = 0;
+    if (TempData["TaskToEditID"] != null)
+    {
+        TaskToEditID = (int)TempData["TaskToEditID"];
+    }
+
 }
 
 <h1>@ViewData["Title"]</h1>
-
 
 <div>
     <ul class="list-group">
         @foreach (var task in tasks)
         {
-            <li class="list-group-item">
-                <div>
-                    <label class="">
-                        <form action="/Tasks/Toggle/@task.ID" method="post" class="form-check-inline">
-                            @if (task.Complete)
-                            {
-                                <input type="submit" class="btn btn-sm btn-success" value="Done" style="margin-right:1em" />
-                                <del><span class="text-dark"> @task.Description</span></del>
-                            }
-                            else
-                            {
-                                <input type="submit" class="btn btn-sm btn-secondary" value="Todo" style="margin-right:1em" />
-                                <span class="text-dark"> @task.Description</span>
-                            }
-                        </form>
-                        @{
-                            if (task.DueDate < DateTime.Now)
-                            {
-                                <span class="badge badge-danger">@task.DueDate.ToString("MM/dd/yyyy")</span>
-                            }
-                            else
-                            {
-                                <span class="badge badge-secondary">@task.DueDate.ToString("MM/dd/yyyy")</span>
-                            }
-                        }
-                        <form action="/Tasks/Delete/@task.ID" method="post" class="form-check-inline" onsubmit="return confirm('Are you sure you want to delete this task?');">
-                            <input type="submit" class="btn btn-sm" value="delete" />
-                        </form>
-                    </label>
-                </div>
-            </li>
-        }
+        <li class="list-group-item">
+            @if (task.ID != TaskToEditID)
+            {
+                <form action="/Tasks/Toggle/@task.ID" method="post" class="form-check-inline">
+                    @if (task.Complete)
+                    {
+                        <input type="submit" class="btn btn-sm btn-success" value="Done" style="margin-right:1em" />
+                        <del><span class="text-dark"> @task.Description</span></del>
+                    }
+                    else
+                    {
+                        <input type="submit" class="btn btn-sm btn-secondary" value="Todo" style="margin-right:1em" />
+                        <span class="text-dark"> @task.Description</span>
+                    }
+                </form>
 
+
+                @if (task.DueDate < DateTime.Now)
+                {
+                    <span class="badge badge-warning">@task.DueDate.ToString("MM/dd/yyyy")</span>
+                }
+                else
+                {
+                    <span class="badge badge-secondary">@task.DueDate.ToString("MM/dd/yyyy")</span>
+                }
+
+
+                <form action="/Tasks/Edit/@task.ID" method="post" class="form-check-inline">
+                    <input type="submit" class="btn btn-sm text-muted" value="edit" />
+                </form>
+
+
+            }
+            else
+            {
+                <form action="/Tasks/Update/@task.ID" method="post" class="form-check-inline">
+                    <div class="form-group form-inline">
+                        <input asp-for="Description" value="@task.Description" placeholder="Task name here" class="form-control" />
+                        <input asp-for="DueDate" value="@task.DueDate.ToString("yyyy-MM-dd")" class="form-control" />
+                        <input type="submit" value="update" class="btn btn-sm text-info"/>
+                    </div>
+                </form>
+                <form action="/Tasks/" method="get" class="form-check-inline" >
+                    <input type="submit" class="btn btn-sm text-dark" value="cancel" />
+                </form>
+                <form action="/Tasks/Delete/@task.ID" method="post" class="form-check-inline" onsubmit="return confirm('Are you sure you want to delete this task?');">
+                    <input type="submit" class="btn btn-sm text-danger" value="delete" />
+                </form>
+            }
+
+        </li>
+        }
+        @if (TaskToEditID == 0)
+        {
         <li class="list-group-item">
             <form asp-action="AddTask" method="post">
                 <div class="form-group form-inline">
                     <input asp-for="Description" value="" placeholder="Task name here" class="form-control" />
-                    <span asp-validation-for="Description" class="text-danger"></span>
-                    <input asp-for="DueDate" value="" class="form-control" />
-                    <span asp-validation-for="DueDate" class="text-danger"></span>
+                    <input asp-for="DueDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control" />
                     <input type="submit" value="+ Add Task" class="btn btn-sm" />
                 </div>
             </form>
         </li>
+        }
     </ul>
 </div>

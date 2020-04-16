@@ -46,7 +46,7 @@ namespace IdentityExample1.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        // TODO: solve [ValidateAntiForgeryToken] bug
         public IActionResult AddTask(IdentityExample1.Models.Task task)
         {
             task.UserID = int.Parse(_userManager.GetUserId(User));
@@ -67,6 +67,24 @@ namespace IdentityExample1.Controllers
         public IActionResult Delete(int id)
         {
             tasksDAL.DeleteTaskbyID(id);
+            return RedirectToAction("Index");
+        }
+
+
+        [HttpPost]
+        public IActionResult Edit(int id)
+        {
+            TempData["TaskToEditID"] = id;
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult Update(int id, IdentityExample1.Models.Task task)
+        {
+            task.ID = id;
+            Console.WriteLine("Task Desc: " + task.Description);
+            Console.WriteLine("Task DueDate: " + task.DueDate.ToString("MM/dd/yyyy"));
+            tasksDAL.UpdateTask(task);
             return RedirectToAction("Index");
         }
     }

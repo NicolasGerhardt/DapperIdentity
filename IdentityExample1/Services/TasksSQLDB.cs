@@ -161,5 +161,38 @@ namespace IdentityExample1.Services
                 }
             }
         }
+
+        public void UpdateTask(Task task)
+        {
+            Console.WriteLine("#####################################################");
+            SqlConnection conn = null;
+
+            const string updateTaskQuery = "update Tasks " +
+                "set  Description = @Description, " +
+                "DueDate = @DueDate " +
+                "where Id = @ID";
+
+            try
+            {
+                using (conn = new SqlConnection(connectionString))
+                {
+                    conn.Execute(updateTaskQuery, task);
+                    Console.WriteLine("Task complete toggled");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally
+            {
+                if (conn != null)
+                {
+                    conn.Close();
+                }
+            }
+
+            Console.WriteLine("#####################################################");
+        }
     }
 }

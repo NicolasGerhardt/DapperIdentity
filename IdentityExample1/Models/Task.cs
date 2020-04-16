@@ -20,12 +20,15 @@ namespace IdentityExample1.Models
 		*/
 		public int ID { get; set; }
 		public int UserID { get; set; }
+
+		[Required]
+		[MinLength(1, ErrorMessage = "Must have task description")]
+		[MaxLength(300, ErrorMessage = "Max 300 characters")]
 		public string Description { get; set; }
 
-		[Display(Name = "Due Date")]
 		[Required]
 		[DataType(DataType.Date)]
-		[DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
+		//[DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
 		public DateTime DueDate { get; set; }
 		public bool Complete { get; set; }
 
