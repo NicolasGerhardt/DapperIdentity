@@ -47,6 +47,33 @@ namespace IdentityExample1.Services
             }
         }
 
+        public void DeleteTaskbyID(int id)
+        {
+            SqlConnection conn = null;
+
+            const string deleteQuery = "Delete from Tasks " +
+                "where Id = @TaskID";
+
+            try
+            {
+                using (conn = new SqlConnection(connectionString))
+                {
+                    conn.Execute(deleteQuery, new { TaskID = id });
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally
+            {
+                if (conn != null)
+                {
+                    conn.Close();
+                }
+            }
+        }
+
         public IEnumerable<IdentityExample1.Models.Task> GetAllTasks()
         {
             IEnumerable<IdentityExample1.Models.Task> AllTasks;
@@ -63,7 +90,7 @@ namespace IdentityExample1.Services
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine(e.Message);
                 AllTasks = null;
             }
             finally
@@ -93,7 +120,7 @@ namespace IdentityExample1.Services
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Console.WriteLine(e.Message);
                 AllTasks = null;
             }
             finally

@@ -59,8 +59,14 @@ namespace IdentityExample1.Controllers
         [HttpPost]
         public IActionResult Toggle(int id)
         {
-            Console.WriteLine("Toggling Task complete status");
             tasksDAL.ToggleTaskbyID(id);
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            tasksDAL.DeleteTaskbyID(id);
             return RedirectToAction("Index");
         }
     }

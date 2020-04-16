@@ -21,27 +21,29 @@
                         <form action="/Tasks/Toggle/@task.ID" method="post" class="form-check-inline">
                             @if (task.Complete)
                             {
-                                <input type="submit" class="btn btn-success" value="Done" style="margin-right:1em"/>
+                                <input type="submit" class="btn btn-sm btn-success" value="Done" style="margin-right:1em" />
                                 <del><span class="text-dark"> @task.Description</span></del>
                             }
                             else
                             {
-                                <input type="submit" class="btn btn-secondary" value="Todo" style="margin-right:1em"/>
+                                <input type="submit" class="btn btn-sm btn-secondary" value="Todo" style="margin-right:1em" />
                                 <span class="text-dark"> @task.Description</span>
                             }
                         </form>
-                            @{
-                                if (task.DueDate < DateTime.Now)
-                                {
-                                    <span class="badge badge-danger">@task.DueDate.ToString("MM/dd/yyyy")</span>
-                                }
-                                else
-                                {
-                                    <span class="badge badge-secondary">@task.DueDate.ToString("MM/dd/yyyy")</span>
-                                }
+                        @{
+                            if (task.DueDate < DateTime.Now)
+                            {
+                                <span class="badge badge-danger">@task.DueDate.ToString("MM/dd/yyyy")</span>
                             }
-
-</label>
+                            else
+                            {
+                                <span class="badge badge-secondary">@task.DueDate.ToString("MM/dd/yyyy")</span>
+                            }
+                        }
+                        <form action="/Tasks/Delete/@task.ID" method="post" class="form-check-inline">
+                            <input type="submit" class="btn btn-sm" value="delete" />
+                        </form>
+                    </label>
                 </div>
             </li>
         }
