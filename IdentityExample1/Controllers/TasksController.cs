@@ -34,7 +34,7 @@ namespace IdentityExample1.Controllers
         {
             if (int.TryParse(_userManager.GetUserId(User), out int UserID))
             {
-                ViewData["allTasks"] = tasksDAL.GetAllTasksByUserID(UserID);
+                ViewData["allTasks"] = tasksDAL.GetUncompletedTasksByUserID(UserID);
             }
             else
             {
@@ -149,5 +149,36 @@ namespace IdentityExample1.Controllers
             return View("Index");
         }
 
+        [HttpPost]
+        public IActionResult Completed()
+        {
+            if (int.TryParse(_userManager.GetUserId(User), out int UserID))
+            {
+                ViewData["allTasks"] = tasksDAL.GetCompletedTasksByUserID(UserID);
+            }
+            else
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+
+            return View("Index");
+        }
+
+        [HttpPost]
+        public IActionResult FullList()
+        {
+            if (int.TryParse(_userManager.GetUserId(User), out int UserID))
+            {
+                ViewData["allTasks"] = tasksDAL.GetAllTasksByUserID(UserID);
+            }
+            else
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+
+            return View("Index");
+        }
     }
 }

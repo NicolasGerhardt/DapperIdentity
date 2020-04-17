@@ -133,7 +133,65 @@ namespace IdentityExample1.Services
             return AllTasks;
         }
 
-        public object SearchTasksByUserID(int userID, string searchTerm)
+        public IEnumerable<Task> GetCompletedTasksByUserID(int userID)
+        {
+            IEnumerable<IdentityExample1.Models.Task> CompletedTasks;
+            SqlConnection conn = null;
+
+            const string readQuery = "select * from Tasks where Complete = 'true' and UserID = @UserID";
+
+            try
+            {
+                using (conn = new SqlConnection(connectionString))
+                {
+                    CompletedTasks = conn.Query<IdentityExample1.Models.Task>(readQuery, new { UserID = userID });
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                CompletedTasks = null;
+            }
+            finally
+            {
+                if (conn != null)
+                {
+                    conn.Close();
+                }
+            }
+            return CompletedTasks;
+        }
+
+        public IEnumerable<Task> GetUncompletedTasksByUserID(int userID)
+        {
+            IEnumerable<IdentityExample1.Models.Task> UncompletedTasks;
+            SqlConnection conn = null;
+
+            const string readQuery = "select * from Tasks where Complete = 'false' and UserID = @UserID";
+
+            try
+            {
+                using (conn = new SqlConnection(connectionString))
+                {
+                    UncompletedTasks = conn.Query<IdentityExample1.Models.Task>(readQuery, new { UserID = userID });
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                UncompletedTasks = null;
+            }
+            finally
+            {
+                if (conn != null)
+                {
+                    conn.Close();
+                }
+            }
+            return UncompletedTasks;
+        }
+
+        public IEnumerable<Task> SearchTasksByUserID(int userID, string searchTerm)
         {
             IEnumerable<IdentityExample1.Models.Task> SearchResults;
             SqlConnection conn = null;
