@@ -103,7 +103,7 @@ namespace IdentityExample1.Services
             return AllTasks;
         }
 
-        public object GetAllTasksByUserID(int id)
+        public IEnumerable<IdentityExample1.Models.Task> GetAllTasksByUserID(int id)
         {
             IEnumerable<IdentityExample1.Models.Task> AllTasks;
             SqlConnection conn = null;
@@ -133,6 +133,36 @@ namespace IdentityExample1.Services
             return AllTasks;
         }
 
+        public object SearchTasksByUserID(int userID, string searchTerm)
+        {
+            IEnumerable<IdentityExample1.Models.Task> SearchResults;
+            SqlConnection conn = null;
+
+            const string searchQuery = "select * from Tasks " +
+                "where UserID = @UserID and Description like @Description";
+
+            try
+            {
+                using (conn = new SqlConnection(connectionString))
+                {
+                    SearchResults = conn.Query<IdentityExample1.Models.Task>(searchQuery, new { UserID = userID, Description = "%" + searchTerm + "%"});
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                SearchResults = null;
+            }
+            finally
+            {
+                if (conn != null)
+                {
+                    conn.Close();
+                }
+            }
+            return SearchResults;
+        }
+
         public void ToggleTaskbyID(int id)
         {
             SqlConnection conn = null;
@@ -146,7 +176,6 @@ namespace IdentityExample1.Services
                 using (conn = new SqlConnection(connectionString))
                 {
                     conn.Execute(toggleCompleteQuery, new { ID = id });
-                    Console.WriteLine("Task complete toggled");
                 }
             }
             catch (Exception e)
@@ -164,7 +193,6 @@ namespace IdentityExample1.Services
 
         public void UpdateTask(Task task)
         {
-            Console.WriteLine("#####################################################");
             SqlConnection conn = null;
 
             const string updateTaskQuery = "update Tasks " +
@@ -177,7 +205,6 @@ namespace IdentityExample1.Services
                 using (conn = new SqlConnection(connectionString))
                 {
                     conn.Execute(updateTaskQuery, task);
-                    Console.WriteLine("Task complete toggled");
                 }
             }
             catch (Exception e)
@@ -191,8 +218,6 @@ namespace IdentityExample1.Services
                     conn.Close();
                 }
             }
-
-            Console.WriteLine("#####################################################");
         }
     }
 }

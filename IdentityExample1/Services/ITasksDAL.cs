@@ -11,8 +11,9 @@ namespace IdentityExample1.Services
         public IEnumerable<Task> GetAllTasks();
         void AddTask(Task task);
         void ToggleTaskbyID(int id);
-        object GetAllTasksByUserID(int v);
+        IEnumerable<Task> GetAllTasksByUserID(int id);
         void DeleteTaskbyID(int id);
         void UpdateTask(Task task);
+        object SearchTasksByUserID(int userID, string searchTerm);
     }
 }

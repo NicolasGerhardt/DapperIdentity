@@ -87,5 +87,67 @@ namespace IdentityExample1.Controllers
             tasksDAL.UpdateTask(task);
             return RedirectToAction("Index");
         }
+
+        [HttpPost]
+        public IActionResult Search(IdentityExample1.Models.Task task)
+        {
+            if (string.IsNullOrEmpty(task.Description))
+            {
+                return RedirectToAction("Index");
+            }
+
+
+            if (int.TryParse(_userManager.GetUserId(User), out int UserID))
+            {
+                string searchTerm = task.Description;
+                ViewData["allTasks"] = tasksDAL.SearchTasksByUserID(UserID, searchTerm);
+            }
+            else
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+
+            return View("Index");
+        }
+
+        [HttpPost]
+        public IActionResult Overdue()
+        {
+
+            if (int.TryParse(_userManager.GetUserId(User), out int UserID))
+            {
+                List<Task> allTasksForUser = tasksDAL.GetAllTasksByUserID(UserID).ToList();
+
+                ViewData["allTasks"] = allTasksForUser.FindAll(t => t.DueDate <= DateTime.Now);
+            }
+            else
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+
+            return View("Index");
+        }
+
+        [HttpPost]
+        public IActionResult Upcomming()
+        {
+
+            if (int.TryParse(_userManager.GetUserId(User), out int UserID))
+            {
+                List<Task> allTasksForUser = tasksDAL.GetAllTasksByUserID(UserID).ToList();
+
+                ViewData["allTasks"] = allTasksForUser.FindAll(t => t.DueDate > DateTime.Now);
+            }
+            else
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+
+            return View("Index");
+        }
+
     }
 }
